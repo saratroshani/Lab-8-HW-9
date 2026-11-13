@@ -32,7 +32,6 @@ For this lab, I:
 
 Logit had the highest accuracy out of the three models.
 
-### ADD PLOT 1 HERE
 
 <img width="1106" height="800" alt="image" src="https://github.com/user-attachments/assets/ee9a45ae-94d2-4e4d-8025-6ac80c7bcd89" />
 
@@ -47,7 +46,6 @@ For people under 30, accuracy was about 13.4%.
 
 For the 60+ group, accuracy was about 81%.
 
-### ADD PLOT 2 HERE
 
 <img width="1106" height="800" alt="image" src="https://github.com/user-attachments/assets/6bd89d2f-dab5-4d04-b58d-d35f7d8c48ae" />
 
@@ -60,7 +58,6 @@ However, false positives increased from 132,767 to 160,401.
 
 This means the new model found more positive cases, but it also made more false positive mistakes.
 
-### ADD PLOT 3 HERE
 
 <img width="1106" height="800" alt="image" src="https://github.com/user-attachments/assets/72b3d9d6-5e99-4403-b806-9a6fc2edc4ba" />
 
@@ -77,12 +74,3 @@ Adding Age Squared improved the model fit, but it did not improve prediction acc
 
 Overall, it is important to look at more than just accuracy when comparing models.
 
-
-## Files
-
-- `Lab8.R` - R code used for the analysis
-- `Lab8.Rmd` - R Markdown file used to create the report
-- `Lab8.html` - Final HTML report
-- `model_accuracy.png` - Model accuracy comparison plot
-- `age_accuracy.png` - Age group accuracy plot
-- `error_tradeoff.png` - False positive and false negative plot
