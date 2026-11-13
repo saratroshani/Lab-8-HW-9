@@ -1,0 +1,197 @@
+---
+title: "Lab 8 - Logit and Probit Models"
+author: "Sara Troshani"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(haven)
+library(knitr)
+
+load('~/Desktop/School Doc/Fall 2026/Econometrics/R Studio Data/Lab7/ACS2021_couples.RData')
+
+source(
+  "~/Desktop/School Doc/Fall 2026/Econometrics/R Studio Data/Lab7/Lab7.R")
+```
+
+```{r lab8-code, include=FALSE}
+source("Lab8.R")
+```
+
+# Introduction
+
+For this lab, I used the same couples data from Lab 7.
+
+The outcome variable is `he_older_6`. It equals 1 when the husband is more than 6 years older than the wife.
+
+I compared OLS, logit, and probit models. I also looked at different cutoffs, age groups, and false positive and false negative errors.
+
+# OLS, Logit, and Probit
+
+```{r, echo=FALSE}
+model_table <- model_comparison
+
+model_table$Accuracy <- paste0(
+  round(model_table$Accuracy * 100, 1),
+  "%"
+)
+
+knitr::kable(
+  model_table,
+  col.names = c(
+    "Model",
+    "Accuracy"
+  ),
+  caption = "Model Accuracy Comparison"
+)
+```
+
+The logit model had the highest accuracy at about 57.1%.
+
+Probit was close at 56.2%, and OLS had the lowest accuracy at 54.1%.
+
+The models also made different types of mistakes. OLS had more false positives, while logit had more false negatives.
+
+# Cutoff Comparison
+
+The average predicted probability was about 0.146 for both logit and probit.
+
+When I used a cutoff of 0.5, both models predicted every observation as 0.
+
+This means that 0.5 was too high for this outcome.
+
+Using the average predicted probability worked better for this comparison.
+
+# Accuracy by Age Group
+
+```{r, echo=FALSE, fig.width=8, fig.height=5}
+ggplot(
+  age_accuracy,
+  aes(
+    x = age_group,
+    y = accuracy,
+    fill = age_group
+  )
+) +
+  geom_col(width = 0.6) +
+  geom_text(
+    aes(
+      label = paste0(
+        round(accuracy * 100, 1),
+        "%"
+      )
+    ),
+    vjust = -0.5
+  ) +
+  scale_x_discrete(
+    limits = c(
+      "Under 30",
+      "30-39",
+      "40-49",
+      "50-59",
+      "60+"
+    )
+  ) +
+  labs(
+    title = "Logit Model Accuracy by Age Group",
+    x = "Age Group",
+    y = "Accuracy"
+  ) +
+  ylim(0, 0.9) +
+  theme_minimal() +
+  theme(
+    legend.position = "none"
+  )
+```
+
+The model worked very differently across age groups.
+
+Accuracy was very low for younger couples and much higher for older couples.
+
+For people under 30, accuracy was about 13.4%.
+
+For the 60+ group, accuracy was about 81%.
+
+This shows that the model had more trouble predicting younger couples.
+
+# Adding Age Squared
+
+Because the results were very different by age, I added Age Squared to see if it would improve the model.
+
+Age and Age Squared were both statistically significant.
+
+The original logit model had about 57.1% accuracy.
+
+The Age Squared model had about 51.4% accuracy.
+
+The Age Squared model had lower residual deviance and AIC, which means it fit the data better overall. But its prediction accuracy was lower.
+
+```{r, echo=FALSE}
+model_table2 <- model_comparison2
+
+model_table2$Accuracy <- paste0(
+  round(model_table2$Accuracy * 100, 1),
+  "%"
+)
+
+knitr::kable(
+  model_table2,
+  col.names = c(
+    "Model",
+    "Accuracy",
+    "False Positives",
+    "False Negatives"
+  ),
+  caption = "Comparison of Logit Models"
+)
+```
+
+
+# False Positive vs False Negative Tradeoff
+
+```{r, echo=FALSE, fig.width=8, fig.height=5}
+ggplot(
+  error_plot,
+  aes(
+    x = Model,
+    y = Count,
+    fill = Error_Type
+  )
+) +
+  geom_col(
+    position = "dodge"
+  ) +
+  scale_x_discrete(
+    limits = c(
+      "Original Logit",
+      "Logit + Age Squared"
+    )
+  ) +
+  labs(
+    title = "False Positive vs False Negative Tradeoff",
+    x = NULL,
+    y = "Number of Errors",
+    fill = "Error Type"
+  ) +
+  theme_minimal()
+```
+
+Adding Age Squared lowered false negatives from 24,423 to 17,653.
+
+But false positives increased from 132,767 to 160,401.
+
+So the new model found more positive cases, but it also made more false positive mistakes.
+
+# Conclusion
+
+The logit model had the highest accuracy out of OLS, logit, and probit.
+
+The cutoff also made a difference. A cutoff of 0.5 did not work well for this outcome.
+
+The model performed much worse for younger couples than older couples.
+
+Adding Age Squared improved the model fit, but it did not improve prediction accuracy.
+
+Overall, it is important to look at more than just accuracy when comparing models.
